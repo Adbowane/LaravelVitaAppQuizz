@@ -85,7 +85,7 @@ a:hover {
 <body>
     <main>
         <div class="container">
-            <h1>Données du fichier CSV</h1>
+            <h1>Nom du Quiz : {{ $filenameWithoutExtension }}</h1>
         
             @if(isset($dataCsv))
             <table>
@@ -100,10 +100,10 @@ a:hover {
                 <tbody>
                     @foreach($dataCsv as $entry)
                     <tr>
-                        <td>{{ $entry['question'] }}</td>
-                        <td>{{ implode(', ', $entry['bonnes_reponses']) }}</td>
-                        <td>{{ implode(', ', $entry['mauvaises_reponses']) }}</td>
-                        <td>{{ implode(', ', $entry['tags']) }}</td>
+                        <td>{{ $entry['Question'] }}</td>
+                        <td>{{ implode(', ', explode(';', $entry['Bonne réponse'])) }}</td>
+                        <td>{{ implode(', ', explode(';', $entry['Mauvaise réponse'])) }}</td>
+                        <td>{{ implode(', ', explode(';', $entry['Tags'])) }}</td>
                     </tr>
                     @endforeach
                 </tbody>
@@ -111,5 +111,6 @@ a:hover {
             @endif
         </div>
     </main>
+        
 </body>
 </html>
