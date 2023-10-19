@@ -22,4 +22,6 @@ Route::get('/management', function () {
     return view('dashboardManagement');
 });
 
+
 Route::post('/managementRecup', [QuizController::class, 'GetCsv'])->name('quiz.store');
+

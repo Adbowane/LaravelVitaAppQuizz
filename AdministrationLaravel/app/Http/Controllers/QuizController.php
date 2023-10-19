@@ -38,6 +38,8 @@ class QuizController extends Controller
                 );
 
                 $dataCsv[] = $entry;
+
+            
             }
 
             fclose($file);
@@ -57,6 +59,7 @@ class QuizController extends Controller
 
     return 'Aucun fichier téléchargé.';
 }
+
 
     
 
