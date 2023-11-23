@@ -24,4 +24,4 @@ Route::get('/management', function () {
 
 
 Route::post('/managementRecup', [QuizController::class, 'GetCsv'])->name('quiz.store');
-
+Route::post('/storeToDatabase', [QuizController::class, 'storeToDatabase'])->name('quiz.storeToDatabase');
