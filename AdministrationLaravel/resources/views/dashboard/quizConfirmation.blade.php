@@ -92,27 +92,34 @@ a:hover {
                 <thead>
                     <tr>
                         <th>Question</th>
-                        <th>Bonnes Réponses</th>
-                        <th>Mauvaises Réponses</th>
+                        <th>Description</th>
+                        <th>Type de Question</th>
+                        <th>Contenu de la Question</th>
+                        <th>Contenu de la Reponse</th>
+                        <th>Correct ou Incorrect</th>
                         <th>Tags</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($dataCsv as $entry)
+                @foreach($dataCsv as $entry)
                     <tr>
                         <td>{{ $entry['Question'] }}</td>
-                        <td>{{ implode(', ', explode(';', $entry['Bonne réponse'])) }}</td>
-                        <td>{{ implode(', ', explode(';', $entry['Mauvaise réponse'])) }}</td>
-                        <td>{{ implode(', ', explode(';', $entry['Tags'])) }}</td>
+                        <td>{{ $entry['Description'] }}</td>
+                        <td>{{ $entry['Type'] }}</td>
+                        <td>{{ $entry['QuestionContent'] }}</td>
+                        <td>{{ $entry['ReponseContent'] }}</td>
+                        <td>{{ $entry['Correct'] }}</td>
+                        <td>{{ $entry['Tags'] }}</td>
                     </tr>
-                    @endforeach
+                @endforeach
+
                 </tbody>
             </table>
             @endif
         </div>
     </main>
-        
 </body>
+
 
 
 </html>

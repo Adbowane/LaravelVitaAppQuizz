@@ -10,10 +10,10 @@ class Player extends Model
     protected $fillable = ['Firstname', 'LastName', 'LastPlay'];
 }
 
-// Modèle pour la table Quiz
 class Quiz extends Model
 {
-    protected $fillable = ['Name', 'Description'];
+    protected $table = 'Quiz'; // Remplacez 'NomDeVotreTable' par le nom de votre table Quiz
+    // ...
 }
 
 // Modèle pour la table Question
@@ -31,7 +31,7 @@ class Answer extends Model
 // Modèle pour la table AnswerQuestion
 class AnswerQuestion extends Model
 {
-    protected $fillable = ['AnswerId', 'QuestionId', 'Correct'];
+    protected $fillable = ['AnswerId', 'QuestionId', 'isCorrect'];
 }
 
 // Modèle pour la table Game
