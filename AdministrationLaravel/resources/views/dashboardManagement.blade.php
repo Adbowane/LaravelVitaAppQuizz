@@ -76,8 +76,7 @@ input[type="file"] {
 }
 
     </style>
-</head>
-<body>
+</head><body>
     <main>
         <div class="container">
             <h1>Créer un quiz</h1>
@@ -92,7 +91,17 @@ input[type="file"] {
         
                 <button type="submit" class="btn btn-primary">Télécharger le fichier CSV</button>
             </form>
+
+            
         </div>
     </main>
 </body>
+
 </html>
+
+@if(session('success'))
+    <script>
+        // Affichage de la pop-up avec un message de succès
+        alert('Données insérées avec succès dans la base de données.');
+    </script>
+@endif

@@ -20,8 +20,14 @@ Route::get('/', function () {
 
 Route::get('/management', function () {
     return view('dashboardManagement');
-});
+})->name('dashboardManagement');
 
 
+//ok
 Route::post('/managementRecup', [QuizController::class, 'GetCsv'])->name('quiz.store');
-Route::post('/storeToDatabase', [QuizController::class, 'storeToDatabase'])->name('quiz.storeToDatabase');
+
+//ok 
+Route::post('/storeToDatabase', [QuizController::class, 'storeData'])->name('data.store');
+
+//ok
+Route::get('/parse', [QuizController::class, 'showParsedCsv'])->name('parse.csv');

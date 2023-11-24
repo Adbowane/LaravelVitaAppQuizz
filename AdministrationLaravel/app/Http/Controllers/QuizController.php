@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\DB;
 
 class QuizController extends Controller
 {
-public function GetCsv(Request $request)
+    public function GetCsv(Request $request)
 {
     if ($request->hasFile('csv_file')) {
         $file = $request->file('csv_file');
@@ -24,60 +24,38 @@ public function GetCsv(Request $request)
         if ($file) {
             fgetcsv($file, 0, ';'); // Sautez la première ligne (ligne d'en-tête)
 
+            $dataCsv = [];
+
             while (($row = fgetcsv($file, 0, ';')) !== false) {
                 $row = array_map('trim', $row);
 
-                // Insérer les données dans la table Question
-                $questionId = DB::table('Question')->insertGetId([
-                    'Type' => mb_convert_encoding($row[2], 'UTF-8', 'auto'),
-                    'Content' => mb_convert_encoding($row[3], 'UTF-8', 'auto'),
-                    'Description' => mb_convert_encoding($row[1], 'UTF-8', 'auto'),
-                ]);
-
-                // Séparer les réponses par virgule
-                $reponses = explode(',', $row[4]);
-
-                foreach ($reponses as $reponse) {
-                    // Insérer les données dans la table Answer
-                    $answerId = DB::table('Answer')->insertGetId([
-                        'Content' => mb_convert_encoding(trim($reponse), 'UTF-8', 'auto'),
-                    ]);
-
-                    // Convertir la réponse correcte en booléen
-                    $isCorrect = strtolower($row[5]) === 'true' ? true : false;
-
-                    // Insérer les données dans la table AnswerQuestion
-                    DB::table('AnswerQuestion')->insert([
-                        'AnswerId' => $answerId,
-                        'QuestionId' => $questionId,
-                        'isCorrect' => $isCorrect,
-                    ]);
-                }
-
-                // Insérer les données dans la table QuestionQuiz
-                DB::table('QuestionQuiz')->insert([
-                    'QuestionId' => $questionId,
-                    'QuizId' => 1, // ID du premier Quiz existant ou utilisez l'ID 1 par défaut
-                ]);
-
-                $entry = array(
+                // Construire chaque entrée pour le tableau $dataCsv
+                $entry = [
                     'Question' => $row[0],
                     'Description' => $row[1],
                     'Type' => $row[2],
-                    'QuestionContent' => $row[3], // Correspond à la nouvelle colonne QuestionContent
-                    'ReponseContent' => $row[4], // Correspond à la nouvelle colonne ReponseContent
-                    'Correct' => $isCorrect ? 'Correct' : 'Incorrect',
+                    'QuestionContent' => $row[3],
+                    'ReponseContent' => $row[4],
+                    'Correct' => strtolower($row[5]) === 'true' ? 'Correct' : 'Incorrect',
                     'Tags' => $row[6],
-                );
-                
-                $dataCsv[] = $entry;
-                
-            }
-            fclose($file);
-            Storage::delete($path);
+                ];
 
-            // Redirigez l'utilisateur vers une autre page après traitement
-            return view('dashboard/quizConfirmation', compact('filenameWithoutExtension', 'dataCsv'));
+                // Correction d'encodage des valeurs
+                $entry = array_map(function ($value) {
+                    return mb_convert_encoding($value, 'UTF-8', 'UTF-8');
+                }, $entry);
+
+                $dataCsv[] = $entry;
+            }
+
+            // fclose($file);
+            // Storage::delete($path);
+
+            // Stocker les données dans la session
+            $request->session()->put('dataCsv', $dataCsv);
+
+            // Rediriger vers la vue quizConfirmation avec les données extraites du CSV
+            return view('dashboard.quizConfirmation', compact('filenameWithoutExtension'));
         } else {
             return "Impossible d'ouvrir le fichier.";
         }
@@ -86,6 +64,48 @@ public function GetCsv(Request $request)
     return 'Aucun fichier téléchargé.';
 }
 
+public function storeData(Request $request)
+{
+    $dataCsv = $request->session()->get('dataCsv');
 
+    foreach ($dataCsv as $entry) {
+        $questionId = DB::table('Question')->insertGetId([
+            'Type' => mb_convert_encoding($entry['Type'], 'UTF-8', 'UTF-8'),
+            'Content' => mb_convert_encoding($entry['QuestionContent'], 'UTF-8', 'UTF-8'),
+            'Description' => mb_convert_encoding($entry['Description'], 'UTF-8', 'UTF-8'),
+        ]);
+
+        $reponses = explode(',', $entry['ReponseContent']);
+
+        foreach ($reponses as $reponse) {
+            $answerId = DB::table('Answer')->insertGetId([
+                'Content' => trim(mb_convert_encoding($reponse, 'UTF-8', 'UTF-8')),
+            ]);
+
+            $isCorrect = $entry['Correct'] === 'Correct' ? true : false;
+
+            DB::table('AnswerQuestion')->insert([
+                'AnswerId' => $answerId,
+                'QuestionId' => $questionId,
+                'isCorrect' => $isCorrect,
+            ]);
+        }
+
+        DB::table('QuestionQuiz')->insert([
+            'QuestionId' => $questionId,
+            'QuizId' => 1, // ID du premier Quiz existant ou utilisez l'ID 1 par défaut
+        ]);
+    }
+
+    return redirect()->route('dashboardManagement')->with('success', 'Données insérées avec succès dans la base de données.');
+}
+
+
+    public function showParsedCsv()
+    {
+        $dataCsv = []; // Assurez-vous que $dataCsv est disponible avec les données du CSV ici
+
+        return view('dashboard.quizConfirmation', compact('dataCsv'));
+    }
 
 }

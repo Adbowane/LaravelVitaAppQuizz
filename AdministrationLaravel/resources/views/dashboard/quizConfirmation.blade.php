@@ -80,6 +80,20 @@ a:hover {
     text-decoration: underline;
 }
 
+.btn-primary-custom {
+    background-color: green;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-primary-custom:hover {
+    background-color: #2980b9;
+}
     </style>
 </head>
 <body>
@@ -87,7 +101,10 @@ a:hover {
         <div class="container">
             <h1>Nom du Quiz : {{ $filenameWithoutExtension }}</h1>
         
-            @if(isset($dataCsv))
+            @if(session()->has('dataCsv'))
+            @php
+                $dataCsv = session('dataCsv');
+            @endphp
             <table>
                 <thead>
                     <tr>
@@ -114,8 +131,18 @@ a:hover {
                 @endforeach
 
                 </tbody>
+
+                <form action="{{ route('data.store') }}" method="POST">
+                    @csrf
+                    <button type="submit" class="btn-primary-custom" onclick="return confirm('Êtes-vous sûr de vouloir envoyer les données dans la base ?');">
+                        Transférer vers la base de données
+                    </button>
+
+                </form>
             </table>
             @endif
+
+       
         </div>
     </main>
 </body>
