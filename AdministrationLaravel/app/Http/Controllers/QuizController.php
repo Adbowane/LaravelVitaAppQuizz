@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Database\Eloquent\Models;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use League\Csv\Reader;
@@ -29,7 +29,7 @@ class QuizController extends Controller
             while (($row = fgetcsv($file, 0, ';')) !== false) {
                 $row = array_map('trim', $row);
 
-                // Construire chaque entrée pour le tableau $dataCsv
+                //Construire chaque entrée pour le tableau $dataCsv
                 $entry = [
                     'Question' => $row[0],
                     'Description' => $row[1],
@@ -39,6 +39,15 @@ class QuizController extends Controller
                     'Correct' => strtolower($row[5]) === 'true' ? 'Correct' : 'Incorrect',
                     'Tags' => $row[6],
                 ];
+                // $entry = [
+                  
+                //     'Description' => $row[0],
+                //     'Type' => $row[1],
+                //     'QuestionContent' => $row[2],
+                //     'ReponseContent' => $row[3],
+                //     'Correct' => strtolower($row[4]) === 'true' ? 'Correct' : 'Incorrect',
+                //     'Tags' => $row[5],
+                // ];
 
                 // Correction d'encodage des valeurs
                 $entry = array_map(function ($value) {
@@ -108,4 +117,27 @@ public function storeData(Request $request)
         return view('dashboard.quizConfirmation', compact('dataCsv'));
     }
 
+    public function showQuizWithQuestionsAndAnswers($quizId)
+    {
+        $quiz = Quiz::with('questions.answers')->find($quizId);
+
+        return view('quiz.show', compact('quiz'));
+    }
+    public function updateQuestion(Request $request, $questionId)
+    {
+        $question = Question::find($questionId);
+        $question->Content = $request->input('content');
+        $question->save();
+
+        return redirect()->back();
+    }
+
+    public function updateAnswer(Request $request, $answerId)
+    {
+        $answer = Answer::find($answerId);
+        $answer->Content = $request->input('content');
+        $answer->save();
+
+        return redirect()->back();
+    }
 }

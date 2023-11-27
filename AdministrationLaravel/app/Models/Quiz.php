@@ -1,9 +1,11 @@
 <?php
 
+
 namespace App\Models;
+use Illuminate\Database\Eloquent\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+
 // Modèle pour la table Player
 class Player extends Model
 {
@@ -12,8 +14,13 @@ class Player extends Model
 
 class Quiz extends Model
 {
-    protected $table = 'Quiz'; // Remplacez 'NomDeVotreTable' par le nom de votre table Quiz
-    // ...
+    // protected $table = 'Quiz'; // Assurez-vous que le nom de la table correspond à votre base de données
+
+    // public function questions()
+    // {
+    //     return $this->hasMany(Question::class);
+    // }
+    protected $fillable = ['Name', 'Description'];
 }
 
 // Modèle pour la table Question

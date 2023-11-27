@@ -108,7 +108,7 @@ a:hover {
             <table>
                 <thead>
                     <tr>
-                        <th>Question</th>
+                        <th>Question </th>
                         <th>Description</th>
                         <th>Type de Question</th>
                         <th>Contenu de la Question</th>
@@ -146,7 +146,4 @@ a:hover {
         </div>
     </main>
 </body>
-
-
-
 </html>

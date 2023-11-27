@@ -31,3 +31,20 @@ Route::post('/storeToDatabase', [QuizController::class, 'storeData'])->name('dat
 
 //ok
 Route::get('/parse', [QuizController::class, 'showParsedCsv'])->name('parse.csv');
+
+//View de l'application CRUD 
+Route::get('/CrudApp', function () {
+    return view('CrudAppManagement');
+})->name('CrudAppManagement');
+//View de l'appli de Modif 
+Route::get('/show', function () {
+    return view('quiz.show');
+})->name('show');
+
+Route::get('/show/{quizId}', [QuizController::class, 'showQuizWithQuestionsAndAnswers'])->name('showQuiz');
+
+//Modification de Question d'un quizz : 
+Route::put('/questions/{questionId}', [QuizController::class,'updateQuestion'])->name('updateQuestion');
+
+//Modification des Réponses d'un quizz : 
+Route::put('/answers/{answerId}', [QuizController::class,'updateAnswer'])->name('updateAnswer');

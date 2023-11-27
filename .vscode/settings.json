@@ -1,0 +1,13 @@
+{
+    "php.validate.executablePath": "C:\\xampp\\php\\php.exe",
+    "liveServer.settings.mount": [
+        
+    ],
+    "liveServer.settings.port": 0,
+    "liveServer.settings.ChromeDebuggingAttachment": false,
+    "fiveServer.browser": [
+
+    ],
+    "fiveServer.php.executable": "C:\\xampp\\php\\php.exe",
+    "fiveServer.php.ini": "C:\\xampp\\php\\php.ini"
+}
